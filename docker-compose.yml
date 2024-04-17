@@ -1,0 +1,38 @@
+version: '3'
+services:
+
+  backend:
+    container_name: backend
+    image: backend
+    ports:
+      - "8080:8080"
+    networks:
+      - devops-training
+
+  db:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=realworld
+      - MYSQL_ROOT_PASSWORD=localhost
+    ports:
+      - '3306:3306'
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+
+  frontend:
+    container_name: frontend
+    image: frontend
+    ports:
+      - "8080:8181"
+    networks:
+      - devops-training
+
+
+networks:
+  devops-training:
+    driver: bridge
